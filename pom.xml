@@ -18,7 +18,37 @@
 	</parent>
 
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>application.properties</include>
+					<include>banner.txt</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>application.properties</exclude>
+					<exclude>banner.txt</exclude>
+				</excludes>
+				<filtering>false</filtering>
+			</resource>
+		</resources>
+
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-clean-plugin</artifactId>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>data</directory>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
 			<!--
 			https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
 			<plugin>
@@ -30,12 +60,267 @@
 					<encoding>${maven-compiler-plugin.encoding}</encoding>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jvmArguments>${failsafe.jacoco.args}</jvmArguments>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start-spring-boot</id>
+						<phase>pre-integration-test</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+						</configuration>
+					</execution>
+					<execution>
+						<id>stop-spring-boot</id>
+						<phase>post-integration-test</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+						<configuration>
+							<skip>${skipTests}</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<configuration>
+					<systemPropertyVariables>
+						<webdriver.chrome.silentOutput>true</webdriver.chrome.silentOutput>
+					</systemPropertyVariables>
+					<argLine>${failsafe.jacoco.args}</argLine>
+					<skip>${skipTests}</skip>
+					<suiteXmlFiles>
+						<suiteXmlFile>${testng.suiteXmlFile.name}</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${jacoco-maven-plugin.version}</version>
+				<configuration>
+					<excludes>
+						<exclude>**/TaskVaultApplication.class</exclude>
+						<exclude>**/taskvault/configurations/*.class</exclude>
+						<exclude>**/exceptions/*.class</exclude>
+					</excludes>
+					<skip>${skipCodeCoverageCheck}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-prepare-agent</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+						<configuration>
+							<propertyName>failsafe.jacoco.args</propertyName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>default-report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit>
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>
+												${jacoco-instruction-coveredratio.minimum}</minimum>
+										</limit>
+										<limit>
+											<counter>BRANCH</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>
+												${jacoco-branch-coveredratio.minimum}</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>5.0.0.4389</version>
+			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!--
+		https://mvnrepository.com/artifact/io.github.nishadchayanakhawa/testng-cutomization -->
+		<dependency>
+			<groupId>io.github.nishadchayanakhawa</groupId>
+			<artifactId>testng-customization</artifactId>
+			<version>${automation-testing-framework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.github.nishadchayanakhawa</groupId>
+			<artifactId>rest-api-bdd</artifactId>
+			<version>${automation-testing-framework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.cucumber/cucumber-testng -->
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-testng</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>dev</name>
+				</property>
+			</activation>
+			<properties>
+				<skipCodeCoverageCheck>false</skipCodeCoverageCheck>
+				<skipTests>false</skipTests>
+				<skipPT>true</skipPT>
+				<spring.profiles.active>dev</spring.profiles.active>
+				<testng.suiteXmlFile.name>api-tests-testng.xml</testng.suiteXmlFile.name>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa</id>
+			<activation>
+				<property>
+					<name>qa</name>
+				</property>
+			</activation>
+			<properties>
+				<skipCodeCoverageCheck>true</skipCodeCoverageCheck>
+				<skipTests>false</skipTests>
+				<skipPT>true</skipPT>
+				<spring.profiles.active>qa</spring.profiles.active>
+				<testng.suiteXmlFile.name>ui-tests-testng.xml</testng.suiteXmlFile.name>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod</id>
+			<activation>
+				<property>
+					<name>prod</name>
+				</property>
+			</activation>
+			<properties>
+				<skipCodeCoverageCheck>true</skipCodeCoverageCheck>
+				<skipTests>true</skipTests>
+				<skipPT>true</skipPT>
+				<spring.profiles.active>prod</spring.profiles.active>
+			</properties>
+		</profile>
+		<profile>
+			<id>performance-test</id>
+			<activation>
+				<property>
+					<name>performance-test</name>
+				</property>
+			</activation>
+			<properties>
+				<skipCodeCoverageCheck>true</skipCodeCoverageCheck>
+				<skipTests>true</skipTests>
+				<skipPT>false</skipPT>
+				<spring.profiles.active>dev</spring.profiles.active>
+			</properties>
+		</profile>
+	</profiles>
 
 	<properties>
 		<maven-compiler-plugin.source>17</maven-compiler-plugin.source>
 		<maven-compiler-plugin.target>17</maven-compiler-plugin.target>
 		<maven-compiler-plugin.encoding>UTF-8</maven-compiler-plugin.encoding>
+		<jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
+
+		<automation-testing-framework.version>2.2.1</automation-testing-framework.version>
+		<cucumber.version>7.12.0</cucumber.version>
+
+		<jacoco-instruction-coveredratio.minimum>0.8</jacoco-instruction-coveredratio.minimum>
+		<jacoco-branch-coveredratio.minimum>0.8</jacoco-branch-coveredratio.minimum>
+
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.projectKey>task-vault</sonar.projectKey>
+		<sonar.organization>nishadchayanakhawa</sonar.organization>
 	</properties>
 </project>
