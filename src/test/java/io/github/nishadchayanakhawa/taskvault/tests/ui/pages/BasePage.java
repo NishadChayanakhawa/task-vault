@@ -22,6 +22,10 @@ public class BasePage extends ApplicationActions {
 	@FindBy(xpath = "//a[@id='taskTypeOption']")
 	WebElement taskTypeOption;
 
+	/** WebElement for the Task Type option under Configurations. */
+	@FindBy(xpath = "//a[@id='taskGroupOption']")
+	WebElement taskGroupOption;
+
 	/** WebElement for the Add Record button. */
 	@FindBy(xpath = "//button[@id='addRecordButton']")
 	WebElement addRecordButton;
@@ -96,6 +100,18 @@ public class BasePage extends ApplicationActions {
 		this.clickElement(configurationsLink, "Configurations");
 		this.clickElement(taskTypeOption, "Task Type option");
 		return new TaskTypeConfigurationPage(this.driver);
+	}
+
+	/**
+	 * Navigates to the Task Type Configuration page through the Configurations
+	 * menu.
+	 * 
+	 * @return An instance of TaskGroupConfigurationPage.
+	 */
+	public TaskGroupConfigurationPage navigateToTaskGroupConfiguration() {
+		this.clickElement(configurationsLink, "Configurations");
+		this.clickElement(taskGroupOption, "Task Group option");
+		return new TaskGroupConfigurationPage(this.driver);
 	}
 
 	/**
