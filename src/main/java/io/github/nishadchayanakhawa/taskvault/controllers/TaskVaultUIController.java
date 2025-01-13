@@ -14,9 +14,14 @@ public class TaskVaultUIController {
 	public String getTaskTypeConfigurationPage() {
 		return "configuration/taskType";
 	}
-	
+
 	@GetMapping("/configuration/taskGroup")
 	public String getTaskGroupConfigurationPage() {
 		return "configuration/taskGroup";
+	}
+
+	@GetMapping("/configuration/resource")
+	public String getResourceConfigurationPage() {
+		return "configuration/resource";
 	}
 }
