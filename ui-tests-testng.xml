@@ -5,10 +5,16 @@
 		<listener
 			class-name="io.nishadc.automationtestingframework.testngcustomization.ReportGenerator"></listener>
 	</listeners>
-	<test name="Configuration tests">
+	<test name="Task type configuration tests">
 		<classes>
 			<class
 				name="io.github.nishadchayanakhawa.taskvault.tests.ui.TaskTypeConfigurationTests" />
+		</classes>
+	</test>
+	<test name="Task group configuration tests">
+		<classes>
+			<class
+				name="io.github.nishadchayanakhawa.taskvault.tests.ui.TaskGroupConfigurationTests" />
 		</classes>
 	</test>
 </suite>

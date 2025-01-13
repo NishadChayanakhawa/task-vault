@@ -11,4 +11,10 @@
 				name="io.github.nishadchayanakhawa.taskvault.tests.api.TaskTypeConfigurationApiIT" />
 		</classes>
 	</test>
+	<test name="Task group configuration api tests">
+		<classes>
+			<class
+				name="io.github.nishadchayanakhawa.taskvault.tests.api.TaskGroupConfigurationApiIT" />
+		</classes>
+	</test>
 </suite>
