@@ -17,4 +17,10 @@
 				name="io.github.nishadchayanakhawa.taskvault.tests.ui.TaskGroupConfigurationTests" />
 		</classes>
 	</test>
+	<test name="Resource configuration tests">
+		<classes>
+			<class
+				name="io.github.nishadchayanakhawa.taskvault.tests.ui.ResourceConfigurationTests" />
+		</classes>
+	</test>
 </suite>

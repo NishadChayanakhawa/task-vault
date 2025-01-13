@@ -22,9 +22,13 @@ public class BasePage extends ApplicationActions {
 	@FindBy(xpath = "//a[@id='taskTypeOption']")
 	WebElement taskTypeOption;
 
-	/** WebElement for the Task Type option under Configurations. */
+	/** WebElement for the Task Group option under Configurations. */
 	@FindBy(xpath = "//a[@id='taskGroupOption']")
 	WebElement taskGroupOption;
+
+	/** WebElement for the Resource option under Configurations. */
+	@FindBy(xpath = "//a[@id='resourceOption']")
+	WebElement resourceOption;
 
 	/** WebElement for the Add Record button. */
 	@FindBy(xpath = "//button[@id='addRecordButton']")
@@ -112,6 +116,17 @@ public class BasePage extends ApplicationActions {
 		this.clickElement(configurationsLink, "Configurations");
 		this.clickElement(taskGroupOption, "Task Group option");
 		return new TaskGroupConfigurationPage(this.driver);
+	}
+
+	/**
+	 * Navigates to the Resource Configuration page through the Configurations menu.
+	 * 
+	 * @return An instance of ResourceConfigurationPage.
+	 */
+	public ResourceConfigurationPage navigateToResourceConfiguration() {
+		this.clickElement(configurationsLink, "Configurations");
+		this.clickElement(resourceOption, "Resource option");
+		return new ResourceConfigurationPage(this.driver);
 	}
 
 	/**
