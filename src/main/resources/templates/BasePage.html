@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:fragment="headSection(title,script,style,link)">
+	<!-- Including external CSS files -->
+	<link th:href="@{/publicContent/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/publicContent/fontawesome/css/all.min.css}" rel="stylesheet" />
+	<link th:href="@{/publicContent/toastr/css/toastr.min.css}" rel="stylesheet" />
+	<link th:href="@{/datatable/css/datatables.min.css}" rel="stylesheet" />
+
+	<!-- Including external JavaScript files -->
+	<script th:src="@{/publicContent/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/publicContent/common/js/teh.js}"></script>
+	<script th:src="@{/publicContent/common/js/logging.js}"></script>
+	<script th:src="@{/publicContent/jquery/js/jquery-3.7.0.min.js}"></script>
+	<script th:src="@{/publicContent/jquery/js/jquery.tmpl.js}"></script>
+	<script th:src="@{/application/js/common/common.js}"></script>
+	<script th:src="@{/application/js/common/apiHandling.js}"></script>
+	<script th:src="@{/publicContent/toastr/js/toastr.min.js}"></script>
+	<script th:src="@{/datatable/js/datatables.min.js}"></script>
+
+	<!-- Dynamic page title -->
+	<title th:text="${title}">My Application</title>
+
+	<!-- Optionally include additional scripts -->
+	<th:block th:if="${script}">
+		<th:block th:replace="${script}" />
+	</th:block>
+
+	<!-- Optionally include additional styles -->
+	<th:block th:if="${style}">
+		<th:block th:replace="${style}" />
+	</th:block>
+
+	<!-- Optionally include additional links -->
+	<th:block th:if="${link}">
+		<th:block th:replace="${link}" />
+	</th:block>
+</head>
+
+<body>
+	<!-- Navigation bar fragment for reuse -->
+	<nav th:fragment="pageHeader(subTitle)" class="navbar navbar-expand-lg bg-body-tertiary">
+		<div class="container-fluid">
+			<!-- Logo and link to the homepage -->
+			<a th:href="@{/home}"><img th:src="@{/publicContent/images/icon.png}" alt="logo" /></a>
+
+			<!-- Subtitle dynamically set based on the context -->
+			<span><strong th:text="${subTitle}"></strong></span>
+
+			<!-- Responsive navigation toggle button -->
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+				aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			<!-- Navigation menu items -->
+			<div id="navbarNavDropdown" class="collapse navbar-collapse justify-content-end pe-5">
+				<ul class="navbar-nav">
+					<!-- Configuration dropdown menu -->
+					<li class="nav-item dropdown">
+						<!-- Configuration menu link -->
+						<a id="configurationsLink" class="nav-link dropdown-toggle" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="fa-solid fa-sliders"></i> Configuration
+						</a>
+						<!-- Dropdown menu items -->
+						<ul class="dropdown-menu">
+							<!-- Task Type configuration link -->
+							<li>
+								<a id="taskTypeOption" class="dropdown-item" th:href="@{/configuration/taskType}">
+									Task Type
+								</a>
+							</li>
+							<!-- Task Group configuration link -->
+							<li>
+								<a id="applicationConfigurationOption" class="dropdown-item"
+									th:href="@{/configuration/taskGroup}">
+									Task Group
+								</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</body>
+
+</html>
