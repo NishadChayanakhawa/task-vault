@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:insert="~{BasePage :: headSection(title=~{::title/text()},script=~{::script},style=~{::style},link=~{::link})}"
+	th:remove="tag">
+	<!-- Setting the page title -->
+	<title>Task Vault</title>
+
+	<!-- Including external JavaScript file for handling task type configuration -->
+	<script th:src="@{/application/js/configuration/taskTypeConfigurationProcessing.js}"></script>
+
+	<!-- Inline script for initializing the configuration processing logic -->
+	<script>
+		$(document).ready(function () {
+			taskTypeConfigurationProcessing.init();
+		});
+	</script>
+
+	<!-- Template for dynamically adding rows to the record table -->
+	<script id="recordListTemplate" type="text/template">
+        <tr>
+            <td id="recordIdentifier_${id}_1">${name}</td>
+            <td>
+                <!-- Edit button for each record -->
+                <button class="border-0 bg-transparent" id="editRecordButton_${id}">
+                    <i class="fa fa-edit"></i> Edit
+                </button>
+                <!-- Delete button for each record -->
+                <button class="border-0 bg-transparent text-danger" id="deleteRecordButton_${id}">
+                    <i class="fa fa-trash"></i> Delete
+                </button>
+            </td>
+        </tr>
+    </script>
+</head>
+
+<body>
+	<!-- Include the header/navigation section from a base template -->
+	<nav th:replace="~{BasePage :: pageHeader(subTitle='Task Type Configuration')}"></nav>
+
+	<!-- Modal for confirming record deletion -->
+	<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- Modal title -->
+					<h1 class="modal-title fs-5" id="deleteConfirmationModalLabel">Delete task type configuration
+						record</h1>
+					<!-- Close button for the modal -->
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Form for handling delete record operations -->
+					<form id="deleteRecordForm">
+						<!-- Hidden input to store the ID of the record to be deleted -->
+						<input type="hidden" class="form-control" id="deleteRecordId" name="id" required />
+						<!-- Confirmation message displaying record identifier -->
+						Confirm delete operation for '<span class="fw-bold text-danger"
+							id="deleteRecordIdentifierDisplay"></span>'
+						<hr>
+						<!-- Buttons for closing the modal or confirming the delete operation -->
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button id="confirmDeleteOperation" type="submit" class="btn btn-danger">Confirm Delete</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for adding or editing task type records -->
+	<div class="modal fade modal-lg" id="putRecordModal" tabindex="-1" aria-labelledby="putRecordModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- Modal title -->
+					<h1 class="modal-title fs-5" id="putRecordModalLabel">Task Type Record</h1>
+					<!-- Close button for the modal -->
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Form for adding or editing task type records -->
+					<form id="putRecordForm" autocomplete="off">
+						<!-- Hidden input to store record ID -->
+						<input type="hidden" class="form-control" id="id" name="id" />
+						<!-- Input field for the record name -->
+						<div class="form-floating mb-3">
+							<input type="text" class="form-control" id="name" name="name" required />
+							<label for="name">Name</label>
+						</div>
+						<hr>
+						<!-- Buttons for closing the modal or saving changes -->
+						<button id="dismissModal" type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Close</button>
+						<button id="saveRecordButton" type="submit" class="btn btn-primary">Save changes</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main content area -->
+	<div class="p-3" id="recordContent">
+		<!-- Button to trigger the modal for adding a new task type record -->
+		<button class="btn btn-sm btn-primary" id="addRecordButton" data-bs-toggle="modal"
+			data-bs-target="#putRecordModal">
+			<i class="fa fa-plus"></i> Add Task Type Record
+		</button>
+		<br>
+		<br>
+		<!-- Table to display the list of task type records -->
+		<table class="table table-striped" id="recordTable">
+			<caption>User Records</caption>
+			<thead>
+				<tr id="recordTableHeader">
+					<th style="width:80%;">Name</th>
+					<th style="width:20%;">Actions</th>
+				</tr>
+			</thead>
+			<tbody id="recordTableBody">
+				<!-- Dynamic rows will be appended here using the template -->
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>
