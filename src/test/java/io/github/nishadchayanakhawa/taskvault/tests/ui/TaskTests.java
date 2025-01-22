@@ -1,8 +1,8 @@
 package io.github.nishadchayanakhawa.taskvault.tests.ui;
 
 import org.assertj.core.api.Assertions;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import io.github.nishadchayanakhawa.taskvault.model.Priority;
 import io.github.nishadchayanakhawa.taskvault.tests.ui.pages.HomePage;
@@ -23,7 +23,7 @@ class TaskTests {
 	 * Sets up the test environment before any test method is executed. Initializes
 	 * the HomePage instance.
 	 */
-	@BeforeClass
+	@BeforeTest
 	void setupTest() {
 		homePage = HomePage.getHomePage();
 	}
@@ -85,7 +85,7 @@ class TaskTests {
 	 * Cleans up the test environment after all test methods are executed. Closes
 	 * the WebDriver instance.
 	 */
-	@AfterClass
+	@AfterTest
 	void tearDownTest() {
 		homePage.getDriver().quit();
 	}
