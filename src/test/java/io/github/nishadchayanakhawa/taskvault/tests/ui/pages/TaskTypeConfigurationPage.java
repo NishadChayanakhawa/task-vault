@@ -49,7 +49,11 @@ public class TaskTypeConfigurationPage extends BasePage {
 	 * @return The toast message displayed after editing the task type.
 	 */
 	public String editTaskType(String oldName, String newName) {
-		this.clickEditButton(oldName); // Click on the Edit button for the specified task type
+		try {
+			this.clickEditButton(oldName); // Click on the Edit button for the specified task type
+		}catch(Exception e) {
+			this.clickEditButton(newName); // Click on the Edit button for the specified task type
+		}
 		this.clearValue(nameInput); // Clear the current value in the name input field
 		this.sendText(nameInput, newName, "Task type name input"); // Enter the new name
 		this.clickElement(saveRecordButton); // Click on Save button

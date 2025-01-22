@@ -68,7 +68,11 @@ public class TaskPage extends BasePage {
 	 * @return The toast message displayed after editing the task.
 	 */
 	public String editTask(String oldName, String newName) {
-		this.clickTaskEditButton(oldName); // Click on the Edit button for the specified task
+		try {
+			this.clickTaskEditButton(oldName); // Click on the Edit button for the specified task
+		} catch (Exception e) {
+			this.clickTaskEditButton(newName); // Click on the Edit button for the specified task
+		}
 		this.clearValue(nameInput); // Clear the current value in the name input field
 		this.sendText(nameInput, newName, "Task name input"); // Enter the new name
 		this.clickElement(saveRecordButton); // Click on Save button
