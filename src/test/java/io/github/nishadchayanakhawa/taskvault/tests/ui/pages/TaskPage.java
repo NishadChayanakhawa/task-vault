@@ -55,6 +55,7 @@ public class TaskPage extends BasePage {
 		this.selectDropDownByVisibleText(taskType, taskTypeVisibleText);
 		this.sendText(nameInput, name, "Task name input"); // Enter the task name
 		this.selectDropDownByVisibleText(priority, taskPriority.getDisplayValue());
+		this.clearValue(dueDate);
 		this.sendText(dueDate, taskDueDate);
 		this.clickElement(saveRecordButton, "Save record button"); // Click on Save button
 		return this.getToastMessage(); // Retrieve and return the toast message
