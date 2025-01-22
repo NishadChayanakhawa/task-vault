@@ -1,0 +1,6 @@
+{
+    "taskTypeId" : "${taskTypeId}",
+    "taskGroupId" : "${taskGroupId}",
+    "name" : "Create testing framework",
+    "priorityCode" : "MEDIUM"
+}

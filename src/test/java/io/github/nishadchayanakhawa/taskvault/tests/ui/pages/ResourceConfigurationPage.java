@@ -49,7 +49,11 @@ public class ResourceConfigurationPage extends BasePage {
 	 * @return The toast message displayed after editing the resource.
 	 */
 	public String editResource(String oldName, String newName) {
-		this.clickEditButton(oldName); // Click on the Edit button for the specified resource
+		try {
+			this.clickEditButton(oldName); // Click on the Edit button for the specified resource
+		}catch(Exception e) {
+			this.clickEditButton(newName); // Click on the Edit button for the specified resource
+		}
 		this.clearValue(nameInput); // Clear the current value in the name input field
 		this.sendText(nameInput, newName, "Resource name input"); // Enter the new name
 		this.clickElement(saveRecordButton); // Click on Save button

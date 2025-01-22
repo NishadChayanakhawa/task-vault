@@ -19,13 +19,15 @@ public class HomePage extends BasePage {
 	 * 
 	 * @return HomePage instance
 	 */
-	public static HomePage getHomePage() {
+	public static HomePage getHomePage(boolean isHeadless) {
 		// Suppress Selenium logs
 		java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.SEVERE);
 
 		// Configure ChromeOptions for WebDriver
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless=new"); // Run browser in headless mode
+		if (isHeadless) {
+			options.addArguments("--headless=new"); // Run browser in headless mode
+		}
 		options.addArguments("--remote-allow-origins=*"); // Allow cross-origin requests
 		options.addArguments("start-maximized"); // Start browser maximized
 		options.addArguments("--window-size=1920,1080"); // Set default window size
@@ -38,6 +40,10 @@ public class HomePage extends BasePage {
 
 		// Return a new HomePage instance
 		return new HomePage(driver);
+	}
+
+	public static HomePage getHomePage() {
+		return HomePage.getHomePage(true);
 	}
 
 	/**

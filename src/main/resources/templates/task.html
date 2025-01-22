@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head th:insert="~{BasePage :: headSection(title=~{::title/text()},script=~{::script},style=~{::style},link=~{::link})}"
+	th:remove="tag">
+	<!-- Setting the page title -->
+	<title>Task Vault</title>
+
+	<!-- Including external JavaScript file for handling task configuration -->
+	<script th:src="@{/application/js/taskProcessing.js}"></script>
+
+	<!-- Inline script for initializing the configuration processing logic -->
+	<script>
+		$(document).ready(function () {
+			taskProcessing.init();
+		});
+	</script>
+
+	<!-- Template for dynamically adding rows to the record table -->
+	<script id="recordListTemplate" type="text/template">
+		<div class="col-sm-6 mb-3 mb-sm-0 p-1">
+				<div class="card">
+					<div class="card-body">
+						<ul class="list-group list-group-horizontal rounded-0 bg-transparent">
+							<li class="p-0 list-group-item align-items-center flex-grow-1 border-0 bg-transparent">
+								<div>
+									<div class="text-muted d-block"><small>${taskGroupName}</small></div>
+									<h5 class="card-title" id="recordIdentifier_${id}">${name}</h5>
+								</div>
+							</li>
+							<li class="list-group-item ps-3 pe-0 py-1 rounded-0 border-0 bg-transparent">
+								{%if priorityCode == "CRITICAL"%}
+								<span class="badge rounded-pill text-danger bg-primary-subtle"><i class="fa-solid fa-circle-xmark"></i> 
+								{%elseif priorityCode == "HIGH"%}
+								<span class="badge rounded-pill text-warning-emphasis bg-primary-subtle"><i class="fa-solid fa-circle-up"></i>
+								{%elseif priorityCode == "MEDIUM"%}
+								<span class="badge rounded-pill text-primary-emphasis bg-primary-subtle"><i class="fa-solid fa-circle-exclamation"></i>
+								{%else%}
+								<span class="badge rounded-pill text-secondary-emphasis bg-primary-subtle"><i class="fa-solid fa-circle-info"></i>
+								{%/if%}
+								${priorityDisplayValue}</span>
+								<div class="text-end text-muted">
+									{%if dueDate%}
+										{%if dueInDays <= 0%}
+										<span class="badge rounded-pill text-bg-danger">
+											<i class="fa-solid fa-hourglass-end"></i>
+										{%elseif dueInDays <= 2%}
+										<span class="badge rounded-pill text-bg-warning">
+											<i class="fa-solid fa-hourglass-half"></i>
+										{%else%}
+										<span class="badge rounded-pill text-bg-success">
+											<i class="fa-solid fa-hourglass-start"></i> 
+										{%/if%}${dueDate}
+										</span>
+									{%else%}
+										<span class="badge rounded-pill text-bg-secondary">
+											<i class="fa-regular fa-hourglass"></i> No due date
+										</span>
+									{%/if%}
+									</div>
+									<span class="badge rounded-pill text-bg-primary">${taskTypeName}</span>
+							</li>
+						</ul>
+					</div>
+					<div class="card-footer text-body-secondary">
+						<div class="d-flex flex-row justify-content-end mb-1">
+							<!-- Edit button for each record -->
+							<button class="border-0 bg-transparent" id="editRecordButton_${id}">
+								<i class="fa fa-edit"></i> Edit
+							</button>
+							<!-- Delete button for each record -->
+							<button class="border-0 bg-transparent text-danger" id="deleteRecordButton_${id}">
+								<i class="fa fa-trash"></i> Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+    </script>
+</head>
+
+<body>
+	<!-- Include the header/navigation section from a base template -->
+	<nav th:replace="~{BasePage :: pageHeader(subTitle='Task Management')}"></nav>
+
+	<!-- Modal for confirming record deletion -->
+	<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- Modal title -->
+					<h1 class="modal-title fs-5" id="deleteConfirmationModalLabel">Delete task record</h1>
+					<!-- Close button for the modal -->
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Form for handling delete record operations -->
+					<form id="deleteRecordForm">
+						<!-- Hidden input to store the ID of the record to be deleted -->
+						<input type="hidden" class="form-control" id="deleteRecordId" name="id" required />
+						<!-- Confirmation message displaying record identifier -->
+						Confirm delete operation for '<span class="fw-bold text-danger"
+							id="deleteRecordIdentifierDisplay"></span>'
+						<hr>
+						<!-- Buttons for closing the modal or confirming the delete operation -->
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button id="confirmDeleteOperation" type="submit" class="btn btn-danger">Confirm Delete</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal for adding or editing task records -->
+	<div class="modal fade modal-xl" id="putRecordModal" tabindex="-1" aria-labelledby="putRecordModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<!-- Modal title -->
+					<h1 class="modal-title fs-5" id="putRecordModalLabel">Task Record</h1>
+					<!-- Close button for the modal -->
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<!-- Form for adding or editing task records -->
+					<form id="putRecordForm" autocomplete="off">
+						<!-- Hidden input to store record ID -->
+						<input type="hidden" class="form-control" id="id" name="id" />
+						<div class="row mb-3">
+							<!-- Input field for the record name -->
+							<div class="col-6">
+								<label class="form-label" for="taskTypeId">Task Type</label>
+								<select class="form-select" id="taskTypeId" name="taskTypeId" required>
+									<th:block th:each="taskType : ${taskTypes}">
+										<option th:value="${taskType.id}" th:text="${taskType.name}">Task Type Options
+										</option>
+									</th:block>
+								</select>
+							</div>
+							<div class="col-6">
+								<label class="form-label" for="taskGroupId">Task Group</label>
+								<select class="form-select" id="taskGroupId" name="taskGroupId" required>
+									<th:block th:each="taskGroup : ${taskGroups}">
+										<option th:value="${taskGroup.id}" th:text="${taskGroup.name}">Task Group
+											Options
+										</option>
+									</th:block>
+								</select>
+							</div>
+							<div class="col-12">
+								<label class="form-label" for="name">Name</label>
+								<input type="text" class="form-control" id="name" name="name" required>
+							</div>
+							<div class="col-4">
+								<label class="form-label" for="priority">Priority</label>
+								<select class="form-select" id="priorityCode" name="priorityCode" required>
+									<option value="CRITICAL">01 - Critical</option>
+									<option value="HIGH">02 - High</option>
+									<option value="MEDIUM" selected>03 - Medium</option>
+									<option value="LOW">04 - Low</option>
+								</select>
+							</div>
+							<div class="col-4">
+								<label for="dueDate">Due Date</label>
+								<input id="dueDate" name="dueDate" class="form-control" type="date" />
+							</div>
+						</div>
+						<hr>
+						<!-- Buttons for closing the modal or saving changes -->
+						<button id="dismissModal" type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Close</button>
+						<button id="saveRecordButton" type="submit" class="btn btn-primary">Save changes</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Main content area -->
+	<div class="p-3" id="recordContent">
+		<!-- Button to trigger the modal for adding a new task record -->
+		<button class="btn btn-sm btn-primary" id="addRecordButton" data-bs-toggle="modal"
+			data-bs-target="#putRecordModal">
+			<i class="fa fa-plus"></i> Add Task
+		</button>
+		<br>
+		<br>
+		<div id="recordPlaceholder" class="row">
+
+		</div>
+		<div class="row">
+
+		</div>
+	</div>
+
+
+
+</body>
+
+</html>

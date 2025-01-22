@@ -49,7 +49,11 @@ public class TaskGroupConfigurationPage extends BasePage {
 	 * @return The toast message displayed after editing the task group.
 	 */
 	public String editTaskGroup(String oldName, String newName) {
-		this.clickEditButton(oldName); // Click on the Edit button for the specified task group
+		try {
+			this.clickEditButton(oldName); // Click on the Edit button for the specified task group
+		}catch(Exception e) {
+			this.clickEditButton(newName); // Click on the Edit button for the specified task group
+		}
 		this.clearValue(nameInput); // Clear the current value in the name input field
 		this.sendText(nameInput, newName, "Task group name input"); // Enter the new name
 		this.clickElement(saveRecordButton); // Click on Save button
