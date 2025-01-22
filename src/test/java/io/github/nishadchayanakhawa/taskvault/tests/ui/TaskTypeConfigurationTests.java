@@ -5,6 +5,7 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import io.github.nishadchayanakhawa.taskvault.tests.ui.facades.TaskVaultFacades;
 import io.github.nishadchayanakhawa.taskvault.tests.ui.pages.HomePage;
 import io.nishadc.automationtestingframework.testngcustomization.TestFactory;
 import io.nishadc.automationtestingframework.testngcustomization.annotations.Retry;
@@ -44,9 +45,7 @@ class TaskTypeConfigurationTests {
 	@Test(priority = 11)
 	void addRecord() {
 		TestFactory.recordTest("Add test type record", homePage.getDriver());
-		String addTaskTypeToastMessage = homePage // Start transaction
-				.navigateToTaskTypeConfiguration() // Navigate to task type configuration
-				.addTaskType("Task type 1"); // Add task type
+		String addTaskTypeToastMessage = TaskVaultFacades.addTaskType(homePage, "Task type 1");
 		Assertions.assertThat(addTaskTypeToastMessage) // Validate toast message
 				.isEqualTo("Task type 'Task type 1' saved successfully"); // Compare with expected
 	}

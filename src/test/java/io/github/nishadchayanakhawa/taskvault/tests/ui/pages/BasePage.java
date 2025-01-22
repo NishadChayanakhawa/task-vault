@@ -30,6 +30,12 @@ public class BasePage extends ApplicationActions {
 	@FindBy(xpath = "//a[@id='resourceOption']")
 	WebElement resourceOption;
 
+	@FindBy(xpath = "//a[@id='taskManagementDropdownLink']")
+	WebElement taskManagementDropdownLink;
+
+	@FindBy(xpath = "//a[@id='taskManagement']")
+	WebElement taskManagementOption;
+
 	/** WebElement for the Add Record button. */
 	@FindBy(xpath = "//button[@id='addRecordButton']")
 	WebElement addRecordButton;
@@ -59,7 +65,10 @@ public class BasePage extends ApplicationActions {
 
 	/** Template XPath for dynamically locating Delete buttons by record name. */
 	private static final String DELETE_BUTTON_XPATH_TEMPLATE = "//td[text()='<RECORD_NAME>']/parent::tr//button[starts-with(@id,'deleteRecordButton_')]";
-
+	
+	private static final String TASK_DELETE_BUTTON_XPATH_TEMPLATE = "//h5[text()='<RECORD_NAME>']//ancestor::div[@class='card']//button[contains(@id,'deleteRecordButton_')]";
+	private static final String TASK_EDIT_BUTTON_XPATH_TEMPLATE = "//h5[text()='<RECORD_NAME>']//ancestor::div[@class='card']//button[contains(@id,'editRecordButton_')]";
+	
 	/** Placeholder used in XPath templates to dynamically replace record names. */
 	private static final String RECORD_NAME_PLACEHOLDER = "<RECORD_NAME>";
 
@@ -72,6 +81,10 @@ public class BasePage extends ApplicationActions {
 	public void clickEditButton(String recordName) {
 		this.clickElement(BasePage.EDIT_BUTTON_XPATH_TEMPLATE.replace(BasePage.RECORD_NAME_PLACEHOLDER, recordName));
 	}
+	
+	public void clickTaskEditButton(String recordName) {
+		this.clickElement(BasePage.TASK_EDIT_BUTTON_XPATH_TEMPLATE.replace(BasePage.RECORD_NAME_PLACEHOLDER, recordName));
+	}
 
 	/**
 	 * Clicks the Delete button corresponding to the specified record name.
@@ -81,6 +94,10 @@ public class BasePage extends ApplicationActions {
 	 */
 	public void clickDeleteButton(String recordName) {
 		this.clickElement(BasePage.DELETE_BUTTON_XPATH_TEMPLATE.replace(BasePage.RECORD_NAME_PLACEHOLDER, recordName));
+	}
+	
+	public void clickTaskDeleteButton(String recordName) {
+		this.clickElement(BasePage.TASK_DELETE_BUTTON_XPATH_TEMPLATE.replace(BasePage.RECORD_NAME_PLACEHOLDER, recordName));
 	}
 
 	/**
@@ -127,6 +144,12 @@ public class BasePage extends ApplicationActions {
 		this.clickElement(configurationsLink, "Configurations");
 		this.clickElement(resourceOption, "Resource option");
 		return new ResourceConfigurationPage(this.driver);
+	}
+
+	public TaskPage navigateToTaskManagement() {
+		this.clickElement(this.taskManagementDropdownLink, "Task management dropdown");
+		this.clickElement(this.taskManagementOption, "Task management option");
+		return new TaskPage(this.driver);
 	}
 
 	/**

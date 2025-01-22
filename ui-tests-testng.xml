@@ -1,9 +1,11 @@
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="Test Estimate Hub UI Tests" parallel="tests" thread-count="5">
+<suite name="Test Estimate Hub UI Tests" parallel="tests" thread-count="1">
 	<listeners>
 		<listener
 			class-name="io.nishadc.automationtestingframework.testngcustomization.ReportGenerator"></listener>
+		<listener
+			class-name="io.nishadc.automationtestingframework.testngcustomization.ExecutionController"></listener>
 	</listeners>
 	<test name="Task type configuration tests">
 		<classes>
@@ -21,6 +23,12 @@
 		<classes>
 			<class
 				name="io.github.nishadchayanakhawa.taskvault.tests.ui.ResourceConfigurationTests" />
+		</classes>
+	</test>
+	<test name="Task tests">
+		<classes>
+			<class
+				name="io.github.nishadchayanakhawa.taskvault.tests.ui.TaskTests" />
 		</classes>
 	</test>
 </suite>

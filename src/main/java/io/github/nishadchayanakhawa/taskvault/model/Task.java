@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "TV_TASK", uniqueConstraints = {
@@ -59,4 +61,16 @@ public class Task {
 	// Due date for the task
 	@Column
 	private LocalDate dueDate;
+
+	// Transient field for calculating days until the due date
+	@Transient
+	private Integer dueInDays;
+
+	// Getter for dueInDays that calculates the difference between dueDate and today
+	public Integer getDueInDays() {
+		if (dueDate != null) {
+			return (int) ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
+		}
+		return null; // Return null if dueDate is not set
+	}
 }

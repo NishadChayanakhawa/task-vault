@@ -24,4 +24,5 @@ public class TaskDTO {
 	private String priorityDisplayValue;
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dueDate;
+	private Integer dueInDays;
 }
