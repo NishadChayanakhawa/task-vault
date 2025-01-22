@@ -57,7 +57,7 @@ class TaskTests {
 		TestFactory.recordTest("Add task", homePage.getDriver());
 		String addTaskToastMessage = homePage // home page
 				.navigateToTaskManagement()// navigate to tage
-				.addTask("Task Group 2", "Task Type 2", "Task #1", Priority.MEDIUM, "21-01-2025");// add task
+				.addTask("Task Group 2", "Task Type 2", "Task #1", Priority.MEDIUM, "2-01-2025");// add task
 		Assertions.assertThat(addTaskToastMessage).isEqualTo("Task 'Task #1' saved successfully");
 	}
 
